@@ -1,0 +1,7 @@
+= pastebin
+
+Description goes here.
+
+== Copyright
+
+Copyright (c) 2009 dougsko. See LICENSE for details.
