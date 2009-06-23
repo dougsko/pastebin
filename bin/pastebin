@@ -1,50 +1,43 @@
 #!/usr/bin/env ruby
 
-# paster.rb is a command line interface to pastebin.ca
+# pastebin is a command line interface to pastebin.ca
 # It can read from a file or from STDIN
 #
 # Copyright (C) 2007 Doug Prostko 
 #
-# Requires the WWW::Mechanize gem
+# Requires the httpclient
 
+require 'rubygems'
 require 'yaml'
 require 'optparse'
-begin
-require 'mechanize'
-rescue LoadError
-	print $stderr.print("\nYOU NEED TO INSTALL THE WWW::MECHANIZE GEM!\n #{$!} \n\n")
-	raise
-end
+require 'httpclient'
 
-class Paster
-
-Paster::VERSION = "0.1.4"
 CONFIG="#{ENV['HOME']}/.paster.yaml"
 
 # set up all the options stuff
-options = {}
+options = {"type" => "1"}
 opts = OptionParser.new do |opts|
 	opts.banner =  "paster.rb is a CLI to http://pastebin.ca
-	Usage: paster.rb [options] 
-	Examples: paster.rb -f foo.rb -t ruby -e '1 d'
-	          cat foo.pl | paster.rb -f - -t perl"
+	Usage: pastebin [options] 
+	Examples: pastebin -f foo.rb -t ruby -e '1 d'
+	          cat foo.pl | pastebin -f - -t perl"
 
 	opts.separator ""
 	opts.separator "Options:"
 
 	opts.on("-f <file>", "--file <file>", String,
 	  	"Use a file for input, use \"-\" for STDIN") do |f|
-	        	options[:file] = f
+	        	options["content"] = f
 	end
 
 	opts.on("-n", "--name <name>", String,
 		"Assign a name/title to your paste") do |n|
-			options[:name] = n
+			options["name"] = n
 		end
 
 	opts.on("-d", "--desc <description>", Array,
 		"Give your paste a description") do |d|
-			options[:desc] = d
+			options["description"] = d
 	end
 
 	expire_array = [ "never",
@@ -73,9 +66,8 @@ opts = OptionParser.new do |opts|
 			 "1 year"
 	]
 	expire_list = expire_array.join(", ")
-	opts.on("-e", "--expire <time>", expire_array, "These can be abbriviated, as long as they are unambigous. Defaults to '1 hour'",
-		"#{expire_list}" ) do |e|
-			options[:expire] = e
+	opts.on("-e", "--expire <time>", expire_array, "These can be abbriviated, as long as they are unambigous. Defaults to '1 hour'", "#{expire_list}" ) do |e|
+			options["expiry"] = e
 	end
 
 	syntax_hash = { "action" => "18",
@@ -110,40 +102,13 @@ opts = OptionParser.new do |opts|
 			"mirc " => "13"
 	}
 	code_list = syntax_hash.keys.sort.join(", ")
-	opts.on("-t", "--type <syntax>", syntax_hash, "Syntax types can be abbriviated, as long as they are unambigous. Defaults to 'raw'",
-		"  #{code_list}") do |encoding|
-			options[:syntax] = encoding 
+	opts.on("-t", "--type <syntax>", syntax_hash, "Syntax types can be abbriviated, as long as they are unambigous. Defaults to 'raw'", "  #{code_list}") do |encoding|
+			options["type"] = encoding 
 	end
 
 	opts.on_tail("-h", "--help", "Show this message") do
 	   puts opts
            exit
-	end
-
-	opts.on_tail("--version", "Show version") do
-		puts "paster.rb version: " + VERSION
-		exit
-	end
-
-	opts.on_tail("--licence", "Show licence") do
-		puts "
-		A CLI to http://pastebin.ca
-		Copyright (C) 2007 Doug Prostko 
-
-		This program is free software; you can redistribute it and/or
-		modify it under the terms of the GNU General Public License
-		as published by the Free Software Foundation; either version 2
-		of the License, or (at your option) any later version.
-
-		This program is distributed in the hope that it will be useful,
-		but WITHOUT ANY WARRANTY; without even the implied warranty of
-		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-		GNU General Public License for more details.
-
-		You should have received a copy of the GNU General Public License
-		along with this program; if not, write to the Free Software
-		Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA."
-		exit
 	end
 end
 
@@ -158,65 +123,33 @@ else
 	puts "Please enter your API key.  You'll only have to do this once."
 	print "You can get a key here: http://pastebin.ca/apikey.php \n "
 	config['key'] = gets.chomp
+    options["api"] = config['key']
 	open(CONFIG, 'w'){ |f| YAML.dump(config, f) }
 	puts "Thank you. Please run the script again. Run #{$0} --help to see all the options."
 	exit
 end
 
-# get page and create the form object
-agent = WWW::Mechanize.new
-agent.user_agent_alias = 'Linux Mozilla'
-page = agent.get("http://www.pastebin.ca/quiet-paste.php?api=#{config['key']}")
-form = page.forms.first
-
-# use options to fill in form
-# name
-form['name'] = options[:name]
-
 # content
-if options.has_key?(:file)
-	if options[:file] == "-"
-		form['content'] = $stdin.read
+if options.has_key?("content")
+	if options["content"] == "-"
+		options["content"] = $stdin.read
 	else
-		form['content'] = open(options[:file]){ |f| f.read }
+		File.open(options["content"]) do |file|
+            options["content"] = file.read
+        end
 	end
 else
 	puts opts
 end
 
-# descripton
-form['description'] = options[:desc]
-
-# syntax
-if options.has_key?(:syntax)
-	form['type'] = options[:syntax]
-else
-	form['type'] = "1"
-end
-
-# expire
-if options.has_key?(:expire)
-	form['expiry'] = options[:expire]
-else
-	form['expiry'] = "1 hour"
-end
-
-# submit results and show link
-search_results = agent.submit(form, form.buttons.first)
-# either get
-# SUCCESS:number
-#   or
-# FAIL:reason
-search_results.body[/(\w+):([\w\s]+)/]
+clnt = HTTPClient.new("http://pastebin.ca/quiet-paste.php")
+clnt.post("http://pastebin.ca/quiet-paste.php", options).content[/(\w+):([\w\s]+)/]
 success_fail = $1
 code_reason = $2
-
 if success_fail == "SUCCESS"
-	puts "http://pastebin.ca/" + code_reason
+    puts "http://pastebin.ca/" + code_reason
 elsif success_fail == "FAIL"
-	puts "#{$0} Error: #{$2}"
+    puts "#{$0} Error: #{$2}"
 else
-	puts "#{$0} Error: Unknown Error"
-end
-
+    puts "#{$0} Error: Unknown Error"
 end
