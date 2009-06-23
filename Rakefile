@@ -5,11 +5,11 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "pastebin"
-    gem.summary = %Q{TODO}
+    gem.summary = %Q{Command line interface to http://pastebin.ca}
     gem.email = "dougtko@gmail.com"
     gem.homepage = "http://github.com/dougsko/pastebin"
     gem.authors = ["dougsko"]
-    gem.description = 'Command line interface to pastebin.ca'
+    gem.description = 'Command line interface to http://pastebin.ca'
     gem.add_dependency 'httpclient'
     gem.require_paths = ['/bin']
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
