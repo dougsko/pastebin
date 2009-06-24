@@ -40,6 +40,10 @@ opts = OptionParser.new do |opts|
 			options["description"] = d
 	end
 
+    opts.on("-t", "--tags", String, "Tags for your paste") do |t|
+        options["tags"] = t
+    end
+
 	expire_array = [ "never",
 			 "5 minutes",
 			 "10 minutes",
@@ -102,7 +106,7 @@ opts = OptionParser.new do |opts|
 			"mirc " => "13"
 	}
 	code_list = syntax_hash.keys.sort.join(", ")
-	opts.on("-t", "--type <syntax>", syntax_hash, "Syntax types can be abbriviated, as long as they are unambigous. Defaults to 'raw'", "  #{code_list}") do |encoding|
+	opts.on("-l", "--language <syntax>", syntax_hash, "Syntax types can be abbriviated, as long as they are unambigous. Defaults to 'raw'", "  #{code_list}") do |encoding|
 			options["type"] = encoding 
 	end
 
