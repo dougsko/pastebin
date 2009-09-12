@@ -1,6 +1,6 @@
 = pastebin
 
-paster.rb is a CLI to http://pastebin.ca
+pastebin is a CLI to http://pastebin.ca
 	Usage: pastebin [options] 
 	Examples: pastebin -f foo.rb -t ruby -e '1 d'
 	          cat foo.pl | pastebin -f - -t perl
@@ -9,9 +9,12 @@ Options:
     -f, --file <file>                Use a file for input, use "-" for STDIN
     -n, --name <name>                Assign a name/title to your paste
     -d, --desc <description>         Give your paste a description
-    -e, --expire <time>              These can be abbriviated, as long as they are unambigous. Defaults to '1 hour'
+    -c, --config <file>              Specify a config file.  Default is ~/.paster.yaml
+    -r, --raw <link>                 Return raw text from a paste link
+    -t, --tags <tags>                Tags for your paste
+    -e, --expire <time>              These can be abbriviated, as long as they are unambigous. Defaults to '1 month'
                                      never, 5 minutes, 10 minutes, 15 minutes, 30 minutes, 45 minutes, 1 hour, 2 hours, 4 hours, 8 hours, 12 hours, 1 day, 2 days, 3 days, 1 week, 2 weeks, 3 weeks, 1 month, 2 months, 3 months, 4 months, 5 months, 6 months, 1 year
-    -t, --type <syntax>              Syntax types can be abbriviated, as long as they are unambigous. Defaults to 'raw'
+    -l, --language <syntax>          Syntax types can be abbriviated, as long as they are unambigous. Defaults to 'raw'
                                        action, ada, apache configuration, assembly (nasm), asterisk configuration, bash, c, c#, c++, css, delphi, html 4.0 strict, java, lisp, lua, microprocessor asm, mirc , objective c, pascal, perl, php, pl/i, python, raw, ruby, scheme, sql statement, visual basic, visual basic .net, xml document
     -h, --help                       Show this message
 

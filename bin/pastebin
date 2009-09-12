@@ -14,7 +14,7 @@ require 'pastebin'
 # set up all the options stuff
 options = {"type" => "1"}
 opts = OptionParser.new do |opts|
-	opts.banner =  "paster.rb is a CLI to http://pastebin.ca
+	opts.banner =  "pastebin is a CLI to http://pastebin.ca
 	Usage: pastebin [options] 
 	Examples: pastebin -f foo.rb -t ruby -e '1 d'
 	          cat foo.pl | pastebin -f - -t perl"
