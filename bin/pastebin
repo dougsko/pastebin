@@ -8,11 +8,8 @@
 # Requires the httpclient
 
 require 'rubygems'
-require 'yaml'
 require 'optparse'
-require 'httpclient'
-
-CONFIG="#{ENV['HOME']}/.paster.yaml"
+require 'pastebin'
 
 # set up all the options stuff
 options = {"type" => "1"}
@@ -40,7 +37,16 @@ opts = OptionParser.new do |opts|
 			options["description"] = d
 	end
 
-    opts.on("-t", "--tags", String, "Tags for your paste") do |t|
+    opts.on("-c", "--config <file>", String,
+        "Specify a config file.  Default is ~/.paster.yaml") do |c|
+            options["config"] = c
+    end
+
+    opts.on("-r", "--raw <link>", String, "Return raw text from a paste link") do |r|
+        options["raw"] = r
+    end
+
+    opts.on("-t", "--tags <tags>", String, "Tags for your paste") do |t|
         options["tags"] = t
     end
 
@@ -119,41 +125,10 @@ end
 # parse options
 opts.parse(ARGV)
 
-# check for config file and read in API key
-if File.exists? CONFIG
-	config = YAML.load(File.open(CONFIG))
+pbin = Pastebin.new(options)
+if options["raw"]
+    puts pbin.get_raw(options["raw"])
 else
-	config = {}
-	puts "Please enter your API key.  You'll only have to do this once."
-	print "You can get a key here: http://pastebin.ca/apikey.php \n "
-	config['key'] = gets.chomp
-    options["api"] = config['key']
-	open(CONFIG, 'w'){ |f| YAML.dump(config, f) }
-	puts "Thank you. Please run the script again. Run #{$0} --help to see all the options."
-	exit
+    puts pbin.paste
 end
 
-# content
-if options.has_key?("content")
-	if options["content"] == "-"
-		options["content"] = $stdin.read
-	else
-		File.open(options["content"]) do |file|
-            options["content"] = file.read
-        end
-	end
-else
-	puts opts
-end
-
-clnt = HTTPClient.new("http://pastebin.ca/quiet-paste.php")
-clnt.post("http://pastebin.ca/quiet-paste.php", options).content[/(\w+):([\w\s]+)/]
-success_fail = $1
-code_reason = $2
-if success_fail == "SUCCESS"
-    puts "http://pastebin.ca/" + code_reason
-elsif success_fail == "FAIL"
-    puts "#{$0} Error: #{$2}"
-else
-    puts "#{$0} Error: Unknown Error"
-end
