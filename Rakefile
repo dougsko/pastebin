@@ -11,7 +11,7 @@ begin
     gem.authors = ["dougsko"]
     gem.description = 'Command line interface to http://pastebin.ca'
     gem.add_dependency 'httpclient'
-    gem.require_paths = ['/bin']
+    gem.require_paths = ['/bin', '/lib']
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 
