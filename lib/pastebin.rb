@@ -9,9 +9,9 @@ require 'hpricot'
 require 'httpclient'
 
 class Pastebin
-     # This method takes a hash containing the variables in the POST
-     # request and an optional config file.  Only either "content" or
-     # "raw" is required.
+     # If you intend to make a paste with this object, give it a hash as
+     # its argument containing the POST variables.
+     #
      #   pbin = Pastbin.new({ "content" => "file_path",
      #                        "name" => "",
      #                        "decription" => "",
@@ -19,12 +19,17 @@ class Pastebin
      #                        "exipry" => "",
      #                        "type" => "",
      #                        "config" => "config file",
-     #                        "raw" => "pastebin link",
      #                      })
+     #   pbin.paste    #=> "http://pastebin.ca/xxxxxxx"
      #
-    def initialize(options)
+     # If you are going to use this object to retrieve text from a
+     # paste, then you do not need an argument.
+     #
+     #  pbin = Pastbin.new
+     #  pbin.get_raw("http://pastebin.ca/xxxxxxx") #=> "some text"
+     #
+    def initialize(options = {})
         @options = options
-        #@options.delete("raw")
         if @options.has_key?("config")
             @config = options["config"]
             @options.delete("config")

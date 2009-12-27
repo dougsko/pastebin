@@ -125,10 +125,11 @@ end
 # parse options
 opts.parse(ARGV)
 
-pbin = Pastebin.new(options)
 if options["raw"]
+    pbin = Pastebin.new
     puts pbin.get_raw(options["raw"])
 else
+    pbin = Pastebin.new(options)
     puts pbin.paste
 end
 
