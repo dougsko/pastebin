@@ -7,6 +7,7 @@ require 'rubygems'
 require 'yaml'
 require 'hpricot'
 require 'httpclient'
+require 'fileutils'
 
 class Pastebin
      # If you intend to make a paste with this object, give it a hash as
@@ -40,6 +41,7 @@ class Pastebin
         if File.exists? @config
             config = YAML.load(File.open(@config))
         else
+            FileUtils.touch @config
             config = {}
             puts "Please enter your API key.  You'll only have to do this once."
             print "You can get a key here: http://pastebin.ca/apikey.php \n "

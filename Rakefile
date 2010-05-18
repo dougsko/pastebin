@@ -37,7 +37,7 @@ end
 task :default => :spec
 
 require 'rake/rdoctask'
-require 'darkfish-rdoc'
+#require 'darkfish-rdoc'
 Rake::RDocTask.new do |rdoc|
   if File.exist?('VERSION.yml')
     config = YAML.load(File.read('VERSION.yml'))
@@ -52,7 +52,7 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
   rdoc.options += [
           '-N',
-          '-f', 'darkfish',
+ #         '-f', 'darkfish',
           ]
 end
 
