@@ -5,7 +5,6 @@
 #
 # Copyright (C) 2010 Doug Prostko 
 #
-# Requires the httpclient
 
 require 'rubygems'
 require 'optparse'
