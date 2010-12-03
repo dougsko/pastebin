@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
-# pastebin is a command line interface to pastebin.ca
+# pastebin is a command line interface to pastebin.com
 # It can read from a file or from STDIN
 #
-# Copyright (C) 2007 Doug Prostko 
+# Copyright (C) 2010 Doug Prostko 
 #
 # Requires the httpclient
 
@@ -12,11 +12,11 @@ require 'optparse'
 require 'pastebin'
 
 # set up all the options stuff
-options = {"type" => "1"}
+options = {}
 opts = OptionParser.new do |opts|
 	opts.banner =  "pastebin is a CLI to http://pastebin.ca
 	Usage: pastebin [options] 
-	Examples: pastebin -f foo.rb -t ruby -e '1 d'
+	Examples: pastebin -f foo.rb -t ruby -e '10 Minutes'
 	          cat foo.pl | pastebin -f - -t perl"
 
 	opts.separator ""
@@ -24,112 +24,72 @@ opts = OptionParser.new do |opts|
 
 	opts.on("-f <file>", "--file <file>", String,
 	  	"Use a file for input, use \"-\" for STDIN") do |f|
-	        	options["content"] = f
+	        	options["paste_code"] = f
 	end
 
 	opts.on("-n", "--name <name>", String,
 		"Assign a name/title to your paste") do |n|
-			options["name"] = n
+			options["paste_name"] = n
 		end
 
-	opts.on("-d", "--desc <description>", Array,
-		"Give your paste a description") do |d|
-			options["description"] = d
+	opts.on("-s", "--subdomain <subdomain>", String,
+		"Paste to a specific subdomain") do |s|
+			options["paste_subdomain"] = s
 	end
 
-    opts.on("-c", "--config <file>", String,
-        "Specify a config file.  Default is ~/.paster.yaml") do |c|
-            options["config"] = c
+    opts.on("-r", "--raw <link>", String, 
+        "Return raw text from a paste link") do |r|
+            options["raw"] = r
     end
 
-    opts.on("-r", "--raw <link>", String, "Return raw text from a paste link") do |r|
-        options["raw"] = r
-    end
-
-    opts.on("-t", "--tags <tags>", String, "Tags for your paste") do |t|
-        options["tags"] = t
-    end
-
-	expire_array = [ "never",
-			 "5 minutes",
-			 "10 minutes",
-			 "15 minutes",
-			 "30 minutes",
-			 "45 minutes",
-			 "1 hour",
-			 "2 hours",
-			 "4 hours",
-			 "8 hours",
-			 "12 hours",
-			 "1 day",
-			 "2 days",
-			 "3 days",
-			 "1 week",
-			 "2 weeks",
-			 "3 weeks",
-			 "1 month",
-			 "2 months",
-			 "3 months",
-			 "4 months",
-			 "5 months",
-			 "6 months",
-			 "1 year"
+	expire_array = [ 
+             "Never",
+			 "10 Minutes",
+			 "1 Hour",
+			 "1 Day",
+			 "1 Month",
 	]
 	expire_list = expire_array.join(", ")
-	opts.on("-e", "--expire <time>", expire_array, "These can be abbriviated, as long as they are unambigous. Defaults to '1 month'", "#{expire_list}" ) do |e|
-			options["expiry"] = e
+	opts.on("-e", "--expire <time>", expire_array, "These can be abbriviated, as long as they are unambigous. Defaults to '1 Month'", "#{expire_list}" ) do |e|
+			options["paste_expire_date"] = e
 	end
 
-	syntax_hash = { "action" => "18",
-			"ada" => "19",
-			"apache configuration" => "20",
-			"assembly (nasm)" => "21",
-		 	"asterisk configuration" => "2",
-			"bash" => "23",
-			"c" => "3",
-			"c#" => "9",
-			"c++" => "4",
-			"css" => "24",
-			"delphi" => "25",
-			"html 4.0 strict" => "26",
-			"java" => "7",
-			"java" => "27",
-			"lisp" => "28",
-			"lua" => "29",
-			"microprocessor asm" => "30",
-			"objective c" => "31",
-			"php" => "5", "pl/i" => "14",
-			"pascal" => "12",
-			"perl" => "6",
-			"python" => "11",
-			"raw" => "1",
-			"ruby" => "10",
-			"sql statement" => "16",
-			"scheme" => "17",
-			"visual basic .net" => "32",
-			"visual basic" => "8",
-			"xml document" => "15",
-			"mirc " => "13"
-	}
-	code_list = syntax_hash.keys.sort.join(", ")
-	opts.on("-l", "--language <syntax>", syntax_hash, "Syntax types can be abbriviated, as long as they are unambigous. Defaults to 'raw'", "  #{code_list}") do |encoding|
-			options["type"] = encoding 
+    syntax_array = [ 'perl',
+        'python',
+        'c',
+        'ruby',
+        'bash',
+        'cpp',
+        'groovy',
+        'latex',
+        'java',
+        'php',
+        'sql',
+        'xml'
+    ]
+
+	code_list = syntax_array.join(", ")
+	opts.on("-l", "--language <syntax>", syntax_array, "Syntax types can be abbriviated, as long as they are unambigous. There are many more supported languages than what is listed here. Defaults to 'text'", "  #{code_list}") do |encoding|
+			options["paste_format"] = encoding 
 	end
+
+    opts.on("-p", "--private", "Make paste private.") do
+        options["paste_private"] = "1"
+    end
 
 	opts.on_tail("-h", "--help", "Show this message") do
 	   puts opts
-           exit
+       exit
 	end
 end
 
 # parse options
 opts.parse(ARGV)
 
+pbin = Pastebin.new(options)
 if options["raw"]
-    pbin = Pastebin.new
     puts pbin.get_raw(options["raw"])
 else
-    pbin = Pastebin.new(options)
     puts pbin.paste
 end
 

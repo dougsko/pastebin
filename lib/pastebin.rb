@@ -5,9 +5,14 @@
 
 require 'rubygems'
 require 'httpclient'
+require 'rexml/document'
 
 class Pastebin
-    def initialize(options = {})
+    include REXML
+
+    # The only option required is 'paste_code', which holds your string.
+    #
+    def initialize(options)
         @options = options
     end
 
@@ -24,9 +29,9 @@ class Pastebin
                     @options["paste_code"] = file.read
                 end
             end
-        else
-            puts "You must specify a file or '-' for STDIN"
-            exit
+        #else
+        #    puts "You must specify a file or '-' for STDIN"
+        #    exit
         end
         clnt = HTTPClient.new
         clnt.post("http://pastebin.com/api_public.php", @options).content
@@ -35,10 +40,12 @@ class Pastebin
     # This method takes a link from a previous paste and returns the raw
     # text.
     #
-    #   pbin.get_raw("http://pastebin.ca/xxxxxxx")    #=> "some text"
+    #   pbin.get_raw("http://pastebin.com/xxxxxxx")    #=> "some text"
     #
     def get_raw(link)
         clnt = HTTPClient.new(:agent_name => 'ruby pastebin gem')
-        clnt.get_content("http://pastebin.com/raw.php?i=#{link[/[\w\d]+$/]}")
+        paste = clnt.get_content("http://pastebin.com/raw.php?i=#{link[/[\w\d]+$/]}")
+        doc = Document.new(paste)
+        doc.elements.to_a("//pre")[0].text
     end
 end
