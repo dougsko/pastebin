@@ -15,8 +15,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "pastebin"
   gem.homepage = "http://github.com/dougsko/pastebin"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = %Q{CLI tool and library to work with pastebin.com}
+  gem.description = %Q{CLI tool and library to work with pastebin.com}
   gem.email = "dougtko@gmail.com"
   gem.authors = ["dougsko"]
   # Include your dependencies below. Runtime dependencies are required when using your gem,

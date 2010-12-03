@@ -3,8 +3,14 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe "Pastebin" do
   before do
       `echo "hello world" > /tmp/hw.txt`
-      options = {"content" => "/tmp/hw.txt", "expiry" => "5 minutes"}
+      options = {"paste_code" => "/tmp/hw.txt", 
+                 "paste_expire_date" => "10 Minutes",
+                 "paste_private" => "1"}
       @pbin = Pastebin.new(options)
+  end
+
+  after do
+      `rm /tmp/hw.txt`
   end
 
   it "tests that @pbin is indeed a Pastebin object" do
@@ -12,13 +18,13 @@ describe "Pastebin" do
   end
 
   it "should paste some text and return a link" do
-      @paste = @pbin.paste
-      @paste.should match(/http:.*\/\d+/)
+      @link = @pbin.paste
+      @link.should match(/http:.*\/[\d\w]+/)
   end
 
   it "should return raw text from a paste link" do
-      @paste = @pbin.paste
-      text = @pbin.get_raw(@paste)
+      link = @pbin.paste
+      text = @pbin.get_raw(link)
       text.should match(/hello world/)
   end
 end
