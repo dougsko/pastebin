@@ -1,6 +1,6 @@
 = pastebin
 
-pastebin is a CLI to http://pastebin.ca
+pastebin is a CLI to http://pastebin.com
 	Usage: pastebin [options] 
 	Examples: pastebin -f foo.rb -t ruby -e '10 Minutes'
 	          cat foo.pl | pastebin -f - -t perl
