@@ -2,22 +2,22 @@
 
 pastebin is a CLI to http://pastebin.ca
 	Usage: pastebin [options] 
-	Examples: pastebin -f foo.rb -t ruby -e '1 d'
+	Examples: pastebin -f foo.rb -t ruby -e '10 Minutes'
 	          cat foo.pl | pastebin -f - -t perl
 
 Options:
     -f, --file <file>                Use a file for input, use "-" for STDIN
     -n, --name <name>                Assign a name/title to your paste
-    -d, --desc <description>         Give your paste a description
-    -c, --config <file>              Specify a config file.  Default is ~/.paster.yaml
+    -s, --subdomain <subdomain>      Paste to a specific subdomain
     -r, --raw <link>                 Return raw text from a paste link
-    -t, --tags <tags>                Tags for your paste
-    -e, --expire <time>              These can be abbriviated, as long as they are unambigous. Defaults to '1 month'
-                                     never, 5 minutes, 10 minutes, 15 minutes, 30 minutes, 45 minutes, 1 hour, 2 hours, 4 hours, 8 hours, 12 hours, 1 day, 2 days, 3 days, 1 week, 2 weeks, 3 weeks, 1 month, 2 months, 3 months, 4 months, 5 months, 6 months, 1 year
-    -l, --language <syntax>          Syntax types can be abbriviated, as long as they are unambigous. Defaults to 'raw'
-                                       action, ada, apache configuration, assembly (nasm), asterisk configuration, bash, c, c#, c++, css, delphi, html 4.0 strict, java, lisp, lua, microprocessor asm, mirc , objective c, pascal, perl, php, pl/i, python, raw, ruby, scheme, sql statement, visual basic, visual basic .net, xml document
+    -e, --expire <time>              These can be abbriviated, as long as they are unambigous. Defaults to '1 Month'
+                                     Never, 10 Minutes, 1 Hour, 1 Day, 1 Month
+    -l, --language <syntax>          Syntax types can be abbriviated, as long as they are unambigous. There are many more supported languages than what is listed here. Defaults to 'text'
+                                       perl, python, c, ruby, bash, cpp, groovy, latex, java, php, sql, xml
+    -p, --private                    Make paste private.
     -h, --help                       Show this message
+
 
 == Copyright
 
-Copyright (c) 2009 dougsko. See LICENSE for details.
+Copyright (c) 2010 dougsko. See LICENSE for details.
