@@ -41,11 +41,11 @@ opts = OptionParser.new do |opts|
     end
 
 	expire_array = [ 
-             "Never",
-			 "10 Minutes",
-			 "1 Hour",
-			 "1 Day",
-			 "1 Month",
+             "N",
+			 "10M",
+			 "1H",
+			 "1D",
+			 "1M",
 	]
 	expire_list = expire_array.join(", ")
 	opts.on("-e", "--expire <time>", expire_array, "These can be abbriviated, as long as they are unambigous. Defaults to '1 Month'", "#{expire_list}" ) do |e|
