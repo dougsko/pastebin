@@ -46,8 +46,6 @@ class Pastebin
     #   pbin.get_raw("http://pastebin.com/xxxxxxx")    #=> "some text"
     #
     def get_raw(link)
-        paste = Net::HTTP.get_response(URI.parse("http://pastebin.com/raw.php?i=#{link[/[\w\d]+$/]}")).body
-        doc = Document.new(paste)
-        doc.elements.to_a("//pre")[0].text
+        Net::HTTP.get_response(URI.parse("http://pastebin.com/raw.php?i=#{link[/[\w\d]+$/]}")).body
     end
 end

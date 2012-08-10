@@ -15,7 +15,7 @@ opts = OptionParser.new do |opts|
 	opts.banner =  "pastebin is a CLI to http://pastebin.com
 	Usage: pastebin [options] 
 	Examples: pastebin -f foo.rb -t ruby -e '10 Minutes'
-	          cat foo.pl | pastebin -f - -t perl"
+	          cat foo.pl | pastebin -f - -l perl"
 
 	opts.separator ""
 	opts.separator "Options:"
