@@ -9,10 +9,13 @@ require 'rexml/document'
 class Pastebin
     include REXML
 
+    DEVKEY = "01fe34146583c731f3725fd8dde3992c"
+
     # The only option required is 'paste_code', which holds your string.
     #
     def initialize(options)
         @options = options
+        @options["api_dev_key"] = DEVKEY
     end
 
     # This POSTs the paste and returns the link
@@ -20,19 +23,20 @@ class Pastebin
     #   pbin.paste    #=> "http://pastebin.com/xxxxxxx"
     #
     def paste
-        if @options.has_key?("paste_code")
-            if @options["paste_code"] == "-"
-                @options["paste_code"] = $stdin.read
+        if @options.has_key?("api_paste_code")
+            if @options["api_paste_code"] == "-"
+                @options["api_paste_code"] = $stdin.read
             else
-                File.open(@options["paste_code"]) do |file|
-                    @options["paste_code"] = file.read
+                File.open(@options["api_paste_code"]) do |file|
+                    @options["api_paste_code"] = file.read
                 end
             end
         #else
         #    puts "You must specify a file or '-' for STDIN"
         #    exit
         end
-        Net::HTTP.post_form(URI.parse('http://pastebin.com/api_public.php'),
+        @options["api_option"] = "paste"
+        Net::HTTP.post_form(URI.parse('http://pastebin.com/api/api_post.php'),
                             @options).body
     end
 

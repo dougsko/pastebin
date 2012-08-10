@@ -6,7 +6,6 @@
 # Copyright (C) 2010 Doug Prostko 
 #
 
-require 'rubygems'
 require 'optparse'
 require 'pastebin'
 
@@ -23,17 +22,17 @@ opts = OptionParser.new do |opts|
 
 	opts.on("-f <file>", "--file <file>", String,
 	  	"Use a file for input, use \"-\" for STDIN") do |f|
-	        	options["paste_code"] = f
+	        	options["api_paste_code"] = f
 	end
 
 	opts.on("-n", "--name <name>", String,
 		"Assign a name/title to your paste") do |n|
-			options["paste_name"] = n
+			options["api_paste_name"] = n
 		end
 
 	opts.on("-s", "--subdomain <subdomain>", String,
 		"Paste to a specific subdomain") do |s|
-			options["paste_subdomain"] = s
+			options["api_paste_subdomain"] = s
 	end
 
     opts.on("-r", "--raw <link>", String, 
@@ -50,7 +49,7 @@ opts = OptionParser.new do |opts|
 	]
 	expire_list = expire_array.join(", ")
 	opts.on("-e", "--expire <time>", expire_array, "These can be abbriviated, as long as they are unambigous. Defaults to '1 Month'", "#{expire_list}" ) do |e|
-			options["paste_expire_date"] = e
+			options["api_paste_expire_date"] = e
 	end
 
     syntax_array = [ 'perl',
@@ -69,11 +68,11 @@ opts = OptionParser.new do |opts|
 
 	code_list = syntax_array.join(", ")
 	opts.on("-l", "--language <syntax>", syntax_array, "Syntax types can be abbriviated, as long as they are unambigous. There are many more supported languages than what is listed here. Defaults to 'text'", "  #{code_list}") do |encoding|
-			options["paste_format"] = encoding 
+			options["api_paste_format"] = encoding 
 	end
 
     opts.on("-p", "--private", "Make paste private.") do
-        options["paste_private"] = "1"
+        options["api_paste_private"] = "1"
     end
 
 	opts.on_tail("-h", "--help", "Show this message") do
