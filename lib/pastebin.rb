@@ -2,9 +2,8 @@
 #
 #  Class to work with http://pastebin.com
 #
-
-require 'rubygems'
-require 'httpclient'
+require 'net/http'
+require 'uri'
 require 'rexml/document'
 
 class Pastebin
@@ -33,8 +32,8 @@ class Pastebin
         #    puts "You must specify a file or '-' for STDIN"
         #    exit
         end
-        clnt = HTTPClient.new
-        clnt.post("http://pastebin.com/api_public.php", @options).content
+        Net::HTTP.post_form(URI.parse('http://pastebin.com/api_public.php'),
+                            @options).body
     end
 
     # This method takes a link from a previous paste and returns the raw
@@ -43,8 +42,7 @@ class Pastebin
     #   pbin.get_raw("http://pastebin.com/xxxxxxx")    #=> "some text"
     #
     def get_raw(link)
-        clnt = HTTPClient.new(:agent_name => 'ruby pastebin gem')
-        paste = clnt.get_content("http://pastebin.com/raw.php?i=#{link[/[\w\d]+$/]}")
+        paste = Net::HTTP.get_response(URI.parse("http://pastebin.com/raw.php?i=#{link[/[\w\d]+$/]}")).body
         doc = Document.new(paste)
         doc.elements.to_a("//pre")[0].text
     end
