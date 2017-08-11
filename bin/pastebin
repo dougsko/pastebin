@@ -6,8 +6,9 @@
 # Copyright (C) 2010 Doug Prostko 
 #
 
+require "bundler/setup"
+require "pastebin"
 require 'optparse'
-require 'pastebin'
 
 # set up all the options stuff
 options = {}
@@ -85,6 +86,7 @@ end
 opts.parse(ARGV)
 
 pbin = Pastebin.new(options)
+puts 'options = ' + options.inspect
 if options["raw"]
     puts pbin.get_raw(options["raw"])
 else
