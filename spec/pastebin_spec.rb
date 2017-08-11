@@ -19,7 +19,7 @@ describe "Pastebin" do
 
   it "should paste some text and return a link" do
       @link = @pbin.paste
-      @link.should match(/http:.*\/[\d\w]+/)
+      @link.should match(/https:.*\/[\d\w]+/)
   end
 
   it "should return raw text from a paste link" do

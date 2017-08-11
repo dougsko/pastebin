@@ -9,6 +9,7 @@ require 'rexml/document'
 class Pastebin
     include REXML
 
+    BASE_URL = "https://pastebin.com"
     DEVKEY = "01fe34146583c731f3725fd8dde3992c"
 
     # The only option required is 'paste_code', which holds your string.
@@ -20,7 +21,7 @@ class Pastebin
 
     # This POSTs the paste and returns the link
     #
-    #   pbin.paste    #=> "http://pastebin.com/xxxxxxx"
+    #   pbin.paste    #=> "https://pastebin.com/xxxxxxx"
     #
     def paste
         if @options.has_key?("api_paste_code")
@@ -36,16 +37,16 @@ class Pastebin
         #    exit
         end
         @options["api_option"] = "paste"
-        Net::HTTP.post_form(URI.parse('http://pastebin.com/api/api_post.php'),
+        Net::HTTP.post_form(URI.parse("#{BASE_URL}/api/api_post.php"),
                             @options).body
     end
 
     # This method takes a link from a previous paste and returns the raw
     # text.
     #
-    #   pbin.get_raw("http://pastebin.com/xxxxxxx")    #=> "some text"
+    #   pbin.get_raw("https://pastebin.com/xxxxxxx")    #=> "some text"
     #
     def get_raw(link)
-        Net::HTTP.get_response(URI.parse("http://pastebin.com/raw.php?i=#{link[/[\w\d]+$/]}")).body
+        Net::HTTP.get_response(URI.parse("#{BASE_URL}/raw.php?i=#{link[/[\w\d]+$/]}")).body
     end
 end
