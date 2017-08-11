@@ -9,6 +9,7 @@ require 'rexml/document'
 class Pastebin
     include REXML
 
+    BASE_URL = "https://pastebin.com"
     DEVKEY = "01fe34146583c731f3725fd8dde3992c"
 
     # The only option required is 'paste_code', which holds your string.
