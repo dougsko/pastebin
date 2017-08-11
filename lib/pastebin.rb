@@ -21,7 +21,7 @@ class Pastebin
 
     # This POSTs the paste and returns the link
     #
-    #   pbin.paste    #=> "http://pastebin.com/xxxxxxx"
+    #   pbin.paste    #=> "https://pastebin.com/xxxxxxx"
     #
     def paste
         if @options.has_key?("api_paste_code")
@@ -44,7 +44,7 @@ class Pastebin
     # This method takes a link from a previous paste and returns the raw
     # text.
     #
-    #   pbin.get_raw("http://pastebin.com/xxxxxxx")    #=> "some text"
+    #   pbin.get_raw("https://pastebin.com/xxxxxxx")    #=> "some text"
     #
     def get_raw(link)
         Net::HTTP.get_response(URI.parse("#{BASE_URL}/raw.php?i=#{link[/[\w\d]+$/]}")).body
