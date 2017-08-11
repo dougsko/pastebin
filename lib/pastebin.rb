@@ -37,7 +37,7 @@ class Pastebin
         #    exit
         end
         @options["api_option"] = "paste"
-        Net::HTTP.post_form(URI.parse('http://pastebin.com/api/api_post.php'),
+        Net::HTTP.post_form(URI.parse("#{BASE_URL}/api/api_post.php"),
                             @options).body
     end
 
@@ -47,6 +47,6 @@ class Pastebin
     #   pbin.get_raw("http://pastebin.com/xxxxxxx")    #=> "some text"
     #
     def get_raw(link)
-        Net::HTTP.get_response(URI.parse("http://pastebin.com/raw.php?i=#{link[/[\w\d]+$/]}")).body
+        Net::HTTP.get_response(URI.parse("#{BASE_URL}/raw.php?i=#{link[/[\w\d]+$/]}")).body
     end
 end
